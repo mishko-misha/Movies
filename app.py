@@ -5,7 +5,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def home():
-    return "Hello, World!"
+    return "Movie Home Page!"
 
 
 @app.route('/register', methods=['POST'])
@@ -23,7 +23,7 @@ def user_logout():
     return 'Logout'
 
 
-@app.route('/user/<user_id>', methods=['GET', 'PUT', 'DELETE'])
+@app.route('/user/<user_id>', methods=['GET', 'PUT'])
 def get_user(user_id):
     return f'User {user_id}'
 
@@ -38,9 +38,14 @@ def films():
     return 'Films'
 
 
-@app.route('/films/<film_id>', methods=['GET', 'PUT', 'DELETE'])
+@app.route('/films/<film_id>', methods=['GET', 'PUT'])
 def film_detail(film_id):
     return f'Film {film_id}'
+
+
+@app.route('/films/<film_id>', methods=['DELETE'])
+def film_delete(film_id):
+    return f'Delete Film {film_id}'
 
 
 @app.route('/films/<film_id>/rating', methods=['GET', 'POST'])
@@ -48,7 +53,7 @@ def film_rating(film_id):
     return f'Rating for Film {film_id}'
 
 
-@app.route('/films/<film_id>/<feedback_id>', methods=['GET', 'POST'])
+@app.route('/films/<film_id>/rating/<feedback_id>', methods=['GET', 'POST'])
 def film_feedback(film_id, feedback_id):
     return f'Feedback {feedback_id} for Film {film_id}'
 

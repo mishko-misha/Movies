@@ -4,7 +4,7 @@ app = Flask(__name__)
 
 
 @app.route('/')
-def home():
+def main_page():
     return "Movie Home Page!"
 
 
@@ -13,7 +13,7 @@ def user_register():
     return 'Register'
 
 
-@app.post('/login')
+@app.route('/login', methods=['POST'])
 def user_login():
     return 'Login'
 
@@ -23,13 +23,13 @@ def user_logout():
     return 'Logout'
 
 
-@app.route('/user/<user_id>', methods=['GET', 'PUT'])
-def get_user(user_id):
+@app.route('/users/<user_id>', methods=['GET', 'PUT'])
+def user_profile(user_id):
     return f'User {user_id}'
 
 
-@app.route('/user/<user_id>', methods=['DELETE'])
-def get_user(user_id):
+@app.route('/users/<user_id>', methods=['DELETE'])
+def user_delete(user_id):
     return f'User {user_id}'
 
 
@@ -73,7 +73,7 @@ def user_watch_later_list(user_id, list_id):
     return f'Watch Later List {list_id} for User {user_id}'
 
 
-@app.route('/users/<user_id>/lists/<list_id>/films/<film_id>', methods=['DELETE'])
+@app.route('/users/<user_id>/lists/<list_id>/<film_id>', methods=['DELETE'])
 def remove_film_from_list(user_id, list_id, film_id):
     return f'Remove Film {film_id} from List {list_id} for User {user_id}'
 

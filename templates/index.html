@@ -8,12 +8,12 @@
     <h1>Movie Home Page</h1>
     <nav>
       <button type="button" class="btn"
-        onclick="window.location.href='{{ url_for('user_login') }}'">
+        onclick="window.location.href='{{ url_for('auth.user_login') }}'">
         Go to Login
       </button>
 
       <button type="button" class="btn"
-        onclick="window.location.href='{{ url_for('user_register') }}'">
+        onclick="window.location.href='{{ url_for('auth.user_register') }}'">
         Go to Register
       </button>
     </nav>

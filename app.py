@@ -1,22 +1,16 @@
-from flask import Flask,render_template
+import os
+
+from flask import Flask, render_template
+from auth import auth_bp
 
 app = Flask(__name__)
+app.secret_key = os.urandom(24)
+app.register_blueprint(auth_bp, url_prefix='/auth')
 
 
 @app.route('/')
 def main_page():
     return render_template('index.html')
-
-
-@app.route('/register', methods=['GET', 'POST'])
-def user_register():
-    return render_template('register.html')
-
-
-@app.route('/login', methods=['GET','POST'])
-def user_login():
-    return render_template('login.html')
-
 
 @app.route('/logout', methods=['GET'])
 def user_logout():

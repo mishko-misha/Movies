@@ -1,0 +1,27 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Login</title>
+    <style>.error{color:#b00}</style>
+</head>
+<body>
+<h1>Login</h1>
+
+<form method="post" action="{{ url_for('auth.user_login') }}">
+    <label for="username">Username or Email:</label><br>
+    <input type="text" id="username" name="username" value="{{ username|default('') }}"><br>
+    {% if errors and errors.get('username') %}
+    <div class="error">{{ errors.get('username') }}</div>
+    {% endif %}<br>
+    <label for="password">Password:</label><br>
+    <input type="password" id="password" name="password"><br>
+    {% if errors and errors.get('password') %}
+    <div class="error">{{ errors.get('password') }}</div>
+    {% endif %}<br>
+
+    <input type="submit" value="Submit">
+    <button type="button" onclick="window.location.href='{{ url_for('main_page') }}'">Go to Home page</button>
+</form>
+</body>
+</html>

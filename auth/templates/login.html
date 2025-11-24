@@ -7,13 +7,8 @@
 </head>
 <body>
 <h1>Login</h1>
-
 {%- if success %}
   <div class="alert alert-success">{{ success }}</div><br>
-{%- endif %}
-
-{%- if error %}
-  <div class="alert alert-danger">{{ error }}</div><br>
 {%- endif %}
 
 <form method="post" action="{{ url_for('auth.user_login') }}">

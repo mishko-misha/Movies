@@ -7,6 +7,7 @@ app = Flask(__name__)
 @app.route('/')
 def main_page():
     con = sqlite3.connect('database.db')
+    con.row_factory = sqlite3.Row
     cur = con.cursor()
     cur.execute('SELECT name, year, country FROM film ORDER BY added_at DESC LIMIT 5')
     result_films = cur.fetchall()

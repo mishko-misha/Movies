@@ -1,21 +1,34 @@
 <!doctype html>
 <html>
-  <head>
+<head>
     <meta charset="utf-8">
     <title>Movie Home Page</title>
-  </head>
+</head>
 <body>
-    <h1>Movie Home Page</h1>
-    <nav>
-      <button type="button" class="btn"
-        onclick="window.location.href='{{ url_for('user_login') }}'">
-        Go to Login
-      </button>
+<h1>Movie Home Page</h1>
 
-      <button type="button" class="btn"
-        onclick="window.location.href='{{ url_for('user_register') }}'">
+{% if films %}
+<ul>
+    {% for film in films %}
+    <li>
+        <strong>{{ film['name'] }}</strong> — <small>{{ film['year'] }} year ({{ film['country'] }})</small>
+    </li>
+    {% endfor %}
+</ul>
+{% else %}
+<p>No films yet.</p>
+{% endif %}
+
+<nav>
+    <button type="button" class="btn"
+            onclick="window.location.href='{{ url_for('user_login') }}'">
+        Go to Login
+    </button>
+
+    <button type="button" class="btn"
+            onclick="window.location.href='{{ url_for('user_register') }}'">
         Go to Register
-      </button>
-    </nav>
-  </body>
+    </button>
+</nav>
+</body>
 </html>

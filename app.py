@@ -1,25 +1,34 @@
-from flask import Flask,render_template
-import sqlite3
+from flask import Flask, render_template, request
+
+from database_connection import DatabaseConnection
 
 app = Flask(__name__)
 
 
 @app.route('/')
 def main_page():
-    con = sqlite3.connect('database.db')
-    con.row_factory = sqlite3.Row
-    cur = con.cursor()
-    cur.execute('SELECT name, year, country FROM film ORDER BY added_at DESC LIMIT 5')
-    result_films = cur.fetchall()
-    return render_template('index.html', films=result_films)
+    with DatabaseConnection() as db:
+        result = db.execute('SELECT name, year, country FROM film ORDER BY added_at DESC LIMIT 5').fetchall()
+        return render_template('index.html', films=result)
 
 
 @app.route('/register', methods=['GET', 'POST'])
 def user_register():
+    if request.method == 'POST':
+        first_name = request.form['username']
+        last_name = request.form['lname']
+        email = request.form['email']
+        password = request.form['password']
+        birth_date = request.form['birth_date']
+        login = email  # Using email as login
+        with DatabaseConnection() as db:
+            db.execute(
+                'INSERT INTO user (first_name, last_name, login,email, password, birth_date) VALUES (?, ?, ?, ?, ?, ?)',
+                (first_name, last_name, login, email, password, birth_date))
     return render_template('register.html')
 
 
-@app.route('/login', methods=['GET','POST'])
+@app.route('/login', methods=['GET', 'POST'])
 def user_login():
     return render_template('login.html')
 
@@ -41,23 +50,20 @@ def user_delete(user_id):
 
 @app.route('/films', methods=['GET', 'POST'])
 def films():
-    con = sqlite3.connect('database.db')
-    cur = con.cursor()
-    cur.execute('SELECT id, poster, name FROM film ORDER BY added_at DESC')
-    result_films = cur.fetchall()
-    return f'Films {result_films}'
+    with DatabaseConnection() as db:
+        result_films = db.execute('SELECT id, poster, name FROM film ORDER BY added_at DESC').fetchall()
+        return f'Films {result_films}'
 
 
 @app.route('/films/<film_id>', methods=['GET', 'PUT'])
 def film_detail(film_id):
-    con = sqlite3.connect('database.db')
-    cur = con.cursor()
-    cur.execute('SELECT * FROM film WHERE id = ?', (film_id,)) # more secure with parameterized query
-    result = cur.fetchone()
-
-    actors = cur.execute(f'SELECT * FROM actor JOIN actor_film on actor.id == actor_film.actor_id WHERE actor_film.film_id = ?', (film_id,)).fetchall()
-    genres = cur.execute(f'SELECT * FROM genre_film WHERE film_id = ?', (film_id,)).fetchall()
-    return f'Film {result}, Actors: {actors}, Genres: {genres}'
+    with DatabaseConnection() as db:
+        result = db.execute('SELECT * FROM film WHERE id = ?', (film_id,)).fetchone()
+        actors = db.execute(
+            f'SELECT * FROM actor JOIN actor_film on actor.id == actor_film.actor_id WHERE actor_film.film_id = ?',
+            (film_id,)).fetchall()
+        genres = db.execute(f'SELECT * FROM genre_film WHERE film_id = ?', (film_id,)).fetchall()
+        return f'Film {result}, Actors: {actors}, Genres: {genres}'
 
 
 @app.route('/films/<film_id>', methods=['DELETE'])
@@ -67,17 +73,17 @@ def film_delete(film_id):
 
 @app.route('/films/<film_id>/rating', methods=['GET', 'POST'])
 def film_rating(film_id):
-    con = sqlite3.connect('database.db')
-    cur = con.cursor()
-    rating = cur.execute('SELECT id, rating FROM film WHERE id = ?', (film_id,)).fetchone()
-    return f'Rating for Film {film_id}: {rating}'
+    with DatabaseConnection() as db:
+        rating = db.execute('SELECT id, rating FROM film WHERE id = ?', (film_id,)).fetchone()
+        return f'Rating for Film {film_id}: {rating}'
+
 
 @app.route('/films/<film_id>/rating/<feedback_id>', methods=['GET', 'POST'])
 def film_feedback(film_id, feedback_id):
-    con = sqlite3.connect('database.db')
-    cur = con.cursor()
-    feedback = cur.execute('SELECT film, grade, description FROM feedback WHERE film = ? AND id = ?' , (film_id,feedback_id)).fetchone()
-    return f'Feedback {feedback_id} for Film {film_id}: {feedback}'
+    with DatabaseConnection() as db:
+        feedback = db.execute('SELECT film, grade, description FROM feedback WHERE film = ? AND id = ?',
+                              (film_id, feedback_id)).fetchone()
+        return f'Feedback {feedback_id} for Film {film_id}: {feedback}'
 
 
 @app.route('/users/<user_id>/lists', methods=['GET', 'POST'])

@@ -1,34 +1,18 @@
-<!doctype html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <title>Movie Home Page</title>
-</head>
-<body>
+{% extends "base.html" %}
+{% block content %}
+
 <h1>Movie Home Page</h1>
 
 {% if films %}
 <ul>
     {% for film in films %}
     <li>
-        <strong>{{ film['name'] }}</strong> — <small>{{ film['year'] }} year ({{ film['country'] }})</small>
+        <strong>{{ film['name'] }}</strong> — <small>{{ film['year'] }} year ({{ film['country'] }}) <a
+            href="/films/{{ film['id'] }}">{{ film['name'] }}</a></small>
     </li>
     {% endfor %}
 </ul>
 {% else %}
 <p>No films yet.</p>
 {% endif %}
-
-<nav>
-    <button type="button" class="btn"
-            onclick="window.location.href='{{ url_for('user_login') }}'">
-        Go to Login
-    </button>
-
-    <button type="button" class="btn"
-            onclick="window.location.href='{{ url_for('user_register') }}'">
-        Go to Register
-    </button>
-</nav>
-</body>
-</html>
+{% endblock %}

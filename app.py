@@ -37,6 +37,7 @@ def user_register():
             db.execute(
                 'INSERT INTO user (first_name, last_name, password, login,email, birth_date) VALUES (?, ?, ?, ?, ?, ?)',
                 (first_name, last_name, password, login, email, birth_date))
+        return redirect(url_for('user_login'))
     return render_template('register.html')
 
 

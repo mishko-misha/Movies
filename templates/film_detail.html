@@ -1,0 +1,17 @@
+<h1>{{ film.name }}</h1>
+<p>{{ film.poster }}</p>
+<p><strong>Duration:</strong> {{ film.duration }} min, <strong>Country:</strong> {{ film.country }}, <strong>Rating:</strong>{{ film.rating }}, <strong>Year:</strong>{{ film.year }}</p>
+<p><strong>Description:</strong> {{ film.description }}</p>
+<h4>Actors</h4>
+<ul>
+    {% for actor in actors %}
+    <li>{{ actor.first_name }} {{ actor.last_name }}</li>
+    {% endfor %}
+</ul>
+
+<h4>Genres</h4>
+<ul>
+    {% for genre in genres %}
+    <li>{{ genre.genre }}</li>
+    {% endfor %}
+</ul>

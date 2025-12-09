@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h1>Film Search</h1>
+
+<form method="GET" action="/films">
+    <input type="text" name="name" placeholder="Film Name">
+    <input type="text" name="actor" placeholder="Actor name">
+    <input type="text" name="year" placeholder="Release Year">
+    <input type="text" name="rating" placeholder="Rating">
+
+    <select name="genre" id="genre">
+        <option value="">--Select Genre--</option>
+        {% for genre in genres %}
+        <option value="{{ genre['genre'] }}">{{ genre['genre'] }}</option>
+        {% endfor %}
+    </select>
+
+    <select name="country" id="country">
+        <option value="">--Select Country--</option>
+        {% for country in countries %}
+        <option value="{{ country['country_name'] }}">{{ country['country_name'] }}</option>
+        {% endfor %}
+    </select>
+
+    <input type="submit" value="Search">
+</form>
+
+<h2>Search results:</h2>
+
+{% if filtered_films %}
+<ul>
+    {% for film in filtered_films %}
+    <li>{{ film['name'] }} ({{ film['year'] }})</li>
+    {% endfor %}
+</ul>
+{% else %}
+<p>No films found.</p>
+{% endif %}
+
+{% endblock %}

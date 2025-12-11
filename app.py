@@ -10,7 +10,7 @@ app.secret_key = 'AS1214jds123%!@#'
 def login_required(f):
     @wraps(f)
     def wrapper(*args, **kwargs):
-        if 'logged_in' in session:
+        if session.get('user_id'):
             return f(*args, **kwargs)
         else:
             return redirect(url_for('user_login'))
@@ -78,8 +78,9 @@ def user_logout():
 @login_required
 def user_profile(user_id):
     session_user_id = session['user_id']
+
     if request.method == 'POST':
-        if user_id != session_user_id or session_user_id is None:
+        if user_id != session_user_id:
             return 'Unauthorized', 403
 
         first_name = request.form['username']
@@ -90,13 +91,14 @@ def user_profile(user_id):
         birth_date = request.form['birth_date']
         photo = request.form['photo']
         additional_info = request.form['additional_info']
+
         with DatabaseConnection() as db:
             db.execute('''
                 UPDATE user 
                 SET first_name = ?, last_name = ?, password = ?, email = ?, phone_number = ?, birth_date = ?, photo = ?, additional_info = ? 
                 WHERE id = ?
             ''', (first_name, last_name, password, email, phone_number, birth_date, photo, additional_info, user_id))
-        return 'Profile updated successfully'
+        return redirect(url_for('user_profile', user_id=user_id))
 
     else:
         with DatabaseConnection() as db:
@@ -104,9 +106,8 @@ def user_profile(user_id):
             if user is None:
                 return 'User not found', 404
 
-            if session_user_id:
-                user_session = db.execute('SELECT * FROM user WHERE id = ?', (session_user_id,)).fetchone()
-            return render_template('user_profile.html', user=user, user_session=user_session)
+            user_session = db.execute('SELECT * FROM user WHERE id = ?', (session_user_id,)).fetchone()
+        return render_template('user_profile.html', user=user, user_session=user_session)
 
 
 @app.route('/users/<user_id>/delete', methods=['DELETE'])

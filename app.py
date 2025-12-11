@@ -16,23 +16,25 @@ def login_required(f):
             return redirect(url_for('user_login'))
     return wrapper
 
-
-@app.route('/')
-def main_page():
-    user_session = session.get('logged_in', False)  # session as dict key: logged_in value: True/False
-    username = None  # Guarantee that variable exists
+def current_user_data():
+    user_session = session.get('logged_in', False)
+    username = None
     if user_session:
         with DatabaseConnection() as db:
             user = db.execute('SELECT * FROM user WHERE id = ?', (session['user_id'],)).fetchone()
             if user:
                 username = user[
-                    'login']  # Get username from database and display it on main page in Hello block if user exists
+                    'login']
+    return user_session, username
 
-    # Collecting the 5 latest films added to the database
+@app.route('/')
+def main_page():
+    user_session, username = current_user_data()
+
     with DatabaseConnection() as db:
-        list_of_films = db.execute('SELECT id,name, year, country FROM film ORDER BY added_at DESC LIMIT 5').fetchall()
+        film = db.execute('SELECT id,name, year, country FROM film ORDER BY added_at DESC LIMIT 5').fetchall()
 
-    return render_template('index.html', user_session=user_session, username=username, latest_films=list_of_films)
+    return render_template('index.html', user_session=user_session, username=username, films=film)
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -115,6 +117,7 @@ def user_delete(user_id):
 
 @app.route('/films', methods=['GET'])
 def films():
+    user_session, username = current_user_data()
     filter_list = []
     actor_filter = False  # need to know if JOIN is needed
     genre_filter = False
@@ -147,14 +150,14 @@ def films():
 
     if filter_list:
         query_to_use += ' WHERE ' + ' AND '.join(filter_list)
-    query_to_use += ' ORDER BY film.added_at DESC'
+        query_to_use += ' ORDER BY film.added_at DESC'
 
     with DatabaseConnection() as db:
         result_films = db.execute(query_to_use).fetchall()
         countries = db.execute("SELECT * FROM country").fetchall()
         actors = db.execute("SELECT first_name, last_name FROM actor").fetchall()
         genres = db.execute("SELECT * FROM genre").fetchall()
-    return render_template('films.html', filtered_films=result_films, countries=countries, actors=actors, genres=genres)
+    return render_template('films.html', films=result_films, countries=countries, actors=actors, genres=genres, user_session=user_session, username=username)
 
 @app.route('/films/<film_id>', methods=['GET', 'PUT'])
 def film_detail(film_id):
@@ -175,12 +178,10 @@ def film_delete(film_id):
 
 
 @app.route('/films/<film_id>/rating', methods=['GET', 'POST'])
-@login_required
 def film_rating(film_id):
     with DatabaseConnection() as db:
         rating = db.execute('SELECT id, rating FROM film WHERE id = ?', (film_id,)).fetchone()
         return f'Rating for Film {film_id}: {rating}'
-
 
 @app.route('/films/<film_id>/rating/<feedback_id>', methods=['GET', 'POST'])
 @login_required

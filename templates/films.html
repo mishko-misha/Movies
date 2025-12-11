@@ -1,4 +1,13 @@
 {% extends "base.html" %}
+
+{% block header_text %}
+    {% if user_session %}
+        Hello, {{ username }}!
+    {% else %}
+        Hey there, do you want sing in or sign up?
+    {% endif %}
+{% endblock %}
+
 {% block content %}
 
 <h1>Film Search</h1>
@@ -27,15 +36,5 @@
 </form>
 
 <h2>Search results:</h2>
-
-{% if filtered_films %}
-<ul>
-    {% for film in filtered_films %}
-    <li>{{ film['name'] }} ({{ film['year'] }})</li>
-    {% endfor %}
-</ul>
-{% else %}
-<p>No films found.</p>
-{% endif %}
-
+{% include "film_list.html" %}
 {% endblock %}

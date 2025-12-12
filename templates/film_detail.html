@@ -1,17 +1,39 @@
-<h1>{{ film.name }}</h1>
-<p>{{ film.poster }}</p>
-<p><strong>Duration:</strong> {{ film.duration }} min, <strong>Country:</strong> {{ film.country }}, <strong>Rating:</strong>{{ film.rating }}, <strong>Year:</strong>{{ film.year }}</p>
-<p><strong>Description:</strong> {{ film.description }}</p>
-<h4>Actors</h4>
-<ul>
-    {% for actor in actors %}
-    <li>{{ actor.first_name }} {{ actor.last_name }}</li>
-    {% endfor %}
-</ul>
+<article class="film-card">
+    <header>
+        <h1>{{ film.name }}</h1>
+    </header>
 
-<h4>Genres</h4>
-<ul>
-    {% for genre in genres %}
-    <li>{{ genre.genre }}</li>
-    {% endfor %}
-</ul>
+    <figure class="poster">
+        <img src="{{ film.poster }}" alt="{{ film.name }} poster">
+    </figure>
+
+    <section class="film-info">
+        <p><strong>Duration:</strong> {{ film.duration }} min</p>
+        <p><strong>Country:</strong> {{ film.country }}</p>
+        <p><strong>Rating:</strong> {{ film.rating }}</p>
+        <p><strong>Year:</strong> {{ film.year }}</p>
+    </section>
+
+    <section class="film-description">
+        <h3>Description</h3>
+        <p>{{ film.description }}</p>
+    </section>
+
+    <section class="film-actors">
+        <h3>Actors</h3>
+        <ul>
+            {% for actor in actors %}
+            <li>{{ actor.first_name }} {{ actor.last_name }}</li>
+            {% endfor %}
+        </ul>
+    </section>
+
+    <section class="film-genres">
+        <h3>Genres</h3>
+        <ul>
+            {% for genre in genres %}
+            <li>{{ genre.genre }}</li>
+            {% endfor %}
+        </ul>
+    </section>
+</article>

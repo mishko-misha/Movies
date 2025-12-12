@@ -1,8 +1,8 @@
 {% extends "base.html" %}
 
-{% block header_text %}
+{% block films_header_text %}
     {% if user_session %}
-        Hello, {{ username }}!
+        {{ username }}
     {% else %}
         Hey there, do you want sing in or sign up?
     {% endif %}

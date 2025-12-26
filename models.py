@@ -14,6 +14,8 @@ class User(Base):
     birth_date = Column(Date)
     photo = Column(String(200))
     additional_info = Column(String(500))
+    last_login = Column(Date)
+    created_at = Column(Date)
 
 class Actor(Base):
     __tablename__ = 'actor'

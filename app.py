@@ -112,8 +112,8 @@ def films():
                 films_query = films_query.join(models.ActorFilm, models.Film.id == models.ActorFilm.film_id) \
                     .join(models.Actor, models.Actor.id == models.ActorFilm.actor_id) \
                     .where(or_(
-                    models.Actor.first_name.ilike(f'%{value}%'),
-                    models.Actor.last_name.ilike(f'%{value}%')
+                    func.concat(models.Actor.first_name, ' ', models.Actor.last_name).ilike(f'%{value}%'),
+                    func.concat(models.Actor.last_name, ' ', models.Actor.first_name).ilike(f'%{value}%')
                 )
                 )
             elif key == 'genre':
